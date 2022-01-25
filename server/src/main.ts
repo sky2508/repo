@@ -7,7 +7,7 @@ import { config } from './config';
 import { Logger, ValidationPipe, BadRequestException } from '@nestjs/common';
 const logger: Logger = new Logger('Main');
 const port = process.env.NODE_SERVER_PORT || config.get('server.port');
-const useJHipsterRegistry = config.get('eureka.client.enabled');
+const useApplicationRegistry = config.get('eureka.client.enabled');
 
 async function bootstrap(): Promise<void> {
     loadCloudConfig();
@@ -29,7 +29,7 @@ async function bootstrap(): Promise<void> {
 }
 
 async function loadCloudConfig(): Promise<void> {
-    if (useJHipsterRegistry) {
+    if (useApplicationRegistry) {
         const endpoint = config.get('cloud.config.uri') || 'http://admin:admin@localhost:8761/config';
         logger.log(`Loading cloud config from ${endpoint}`);
 
@@ -48,7 +48,7 @@ async function loadCloudConfig(): Promise<void> {
 }
 
 function registerAsEurekaService(): void {
-    if (useJHipsterRegistry) {
+    if (useApplicationRegistry) {
         logger.log(`Registering with eureka ${config.get('cloud.config.uri')}`);
         const Eureka = require('eureka-js-client').Eureka;
         const eurekaUrl = require('url').parse(config.get('cloud.config.uri'));

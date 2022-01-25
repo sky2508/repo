@@ -11,7 +11,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         super({
             jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
             ignoreExpiration: true,
-            secretOrKey: config['jhipster.security.authentication.jwt.base64-secret'],
+            secretOrKey: config['application.security.authentication.jwt.base64-secret'],
         });
     }
 

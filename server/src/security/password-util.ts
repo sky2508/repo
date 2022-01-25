@@ -5,7 +5,7 @@ export async function transformPassword(user: { password?: string }): Promise<vo
     if (user.password) {
         user.password = await bcrypt.hash(
             user.password,
-            config.get('jhipster.security.authentication.jwt.hash-salt-or-rounds'),
+            config.get('application.security.authentication.jwt.hash-salt-or-rounds'),
         );
     }
     return Promise.resolve();

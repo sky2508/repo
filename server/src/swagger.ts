@@ -4,12 +4,12 @@ import { config } from './config';
 
 export function setupSwagger(app: INestApplication): any {
     const logger: Logger = new Logger('Swagger');
-    const swaggerEndpoint = config.get('jhipster.swagger.path');
+    const swaggerEndpoint = config.get('application.swagger.path');
 
     const options = new DocumentBuilder()
-        .setTitle(config.get('jhipster.swagger.title'))
-        .setDescription(config.get('jhipster.swagger.description'))
-        .setVersion(config.get('jhipster.swagger.version'))
+        .setTitle(config.get('application.swagger.title'))
+        .setDescription(config.get('application.swagger.description'))
+        .setVersion(config.get('application.swagger.version'))
         .addBearerAuth()
         .build();
     const document = SwaggerModule.createDocument(app, options);
