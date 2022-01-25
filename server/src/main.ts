@@ -39,8 +39,8 @@ async function loadCloudConfig(): Promise<void> {
             name: config.get('cloud.config.name'),
             profiles: config.get('cloud.config.profile') || ['prod'],
             // auth: {
-            //   user: config.get('jhipster.registry.username') || 'admin',
-            //   pass: config.get('jhipster.registry.password') || 'admin'
+            //   user: config.get('application.registry.username') || 'admin',
+            //   pass: config.get('application.registry.password') || 'admin'
             // }
         });
         config.addAll(cloudConfig.properties);
@@ -78,8 +78,8 @@ function registerAsEurekaService(): void {
             },
             requestMiddleware: (requestOpts, done): any => {
                 requestOpts.auth = {
-                    user: config.get('jhipster.registry.username') || 'admin',
-                    password: config.get('jhipster.registry.password') || 'admin',
+                    user: config.get('application.registry.username') || 'admin',
+                    password: config.get('application.registry.password') || 'admin',
                 };
                 done(requestOpts);
             },
