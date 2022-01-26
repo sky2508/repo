@@ -61,13 +61,13 @@ export class SeedUsersRoles1570200490072 implements MigrationInterface {
     };
 
     // eslint-disable-next-line
-  public async up(queryRunner: QueryRunner): Promise<any> {
-        const authorityRepository = getRepository('nhi_authority');
+    public async up(queryRunner: QueryRunner): Promise<any> {
+        const authorityRepository = getRepository('sv_authority');
 
         const adminRole = await authorityRepository.save(this.role1);
         const userRole = await authorityRepository.save(this.role2);
 
-        const userRepository = getRepository('nhi_user');
+        const userRepository = getRepository('sv_user');
 
         this.user1.authorities = [adminRole, userRole];
         this.user3.authorities = [adminRole, userRole];
@@ -79,5 +79,5 @@ export class SeedUsersRoles1570200490072 implements MigrationInterface {
     }
 
     // eslint-disable-next-line
-  public async down(queryRunner: QueryRunner): Promise<any> { }
+    public async down(queryRunner: QueryRunner): Promise<any> {}
 }

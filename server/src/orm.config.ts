@@ -27,7 +27,7 @@ function ormConfig(): TypeOrmModuleOptions {
         ormconfig = {
             name: 'default',
             type: 'mysql',
-            database: 'nestdb',
+            database: 'nestdb3',
             host: 'localhost',
             port: 3306,
             username: 'root',

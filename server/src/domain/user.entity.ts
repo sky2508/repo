@@ -3,7 +3,7 @@ import { Entity, Column, ManyToMany, JoinTable } from 'typeorm';
 import { BaseEntity } from './base/base.entity';
 import { Exclude } from 'class-transformer';
 
-@Entity('nhi_user')
+@Entity('sv_user')
 export class User extends BaseEntity {
     @Column({ unique: true })
     login: string;
