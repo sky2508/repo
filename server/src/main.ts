@@ -5,6 +5,7 @@ import { AppModule } from './app.module';
 import { setupSwagger } from './swagger';
 import { config } from './config';
 import { Logger, ValidationPipe, BadRequestException } from '@nestjs/common';
+import { isEmail } from 'class-validator';
 const logger: Logger = new Logger('Main');
 const port = process.env.NODE_SERVER_PORT || config.get('server.port');
 const useApplicationRegistry = config.get('eureka.client.enabled');

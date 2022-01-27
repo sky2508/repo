@@ -18,7 +18,7 @@ export class User extends BaseEntity {
     @Column({ default: 'en' })
     langKey?: string;
 
-    @ManyToMany(() => Authority)
+    @ManyToMany(() => Authority) // creating a new table
     @JoinTable()
     authorities?: any[];
 

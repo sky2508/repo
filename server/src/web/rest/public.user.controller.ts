@@ -4,7 +4,7 @@ import { PageRequest, Page } from '../../domain/base/pagination.entity';
 import { UserDTO } from '../../service/dto/user.dto';
 import { Request } from 'express';
 import { HeaderUtil } from '../../client/header-util';
-import { ApiUseTags, ApiResponse, ApiOperation } from '@nestjs/swagger';
+import { ApiUseTags, ApiResponse, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { AuthService } from '../../service/auth.service';
 
 @Controller('api')
