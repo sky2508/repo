@@ -18,6 +18,8 @@ npm-debug.log.*
 # Node Server NestJS
 ######################
 server/dist
+server/logs.json
+server/logsArray.json
 
 ######################
 # SASS

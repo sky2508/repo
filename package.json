@@ -9,7 +9,10 @@
     "start:app": "cd server && npm run start",
     "test": "echo \"INFO: no client test found\""
   },
-  "dependencies": {},
+  "dependencies": {
+    "nestjs-pino": "^2.5.0",
+    "pino-http": "^6.6.0"
+  },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "2.11.0",
     "@typescript-eslint/eslint-plugin-tslint": "2.11.0",
