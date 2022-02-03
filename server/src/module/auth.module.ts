@@ -11,7 +11,8 @@ import { AuthorityRepository } from '../repository/authority.repository';
 
 import { PublicUserController } from '../web/rest/public.user.controller';
 import { AccountController } from '../web/rest/account.controller';
-
+import { LoggerModule } from 'nestjs-pino';
+import { pino } from 'pino';
 @Module({
     imports: [
         TypeOrmModule.forFeature([AuthorityRepository]),
