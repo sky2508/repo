@@ -8,7 +8,7 @@ import { ApiUseTags, ApiResponse, ApiOperation, ApiBearerAuth } from '@nestjs/sw
 import { AuthService } from '../../service/auth.service';
 
 @Controller('api')
-@UseInterceptors(LoggingInterceptor, ClassSerializerInterceptor)
+@UseInterceptors(ClassSerializerInterceptor)
 @ApiUseTags('public-user-controller')
 export class PublicUserController {
     logger = new Logger('PublicUserController');

@@ -3,7 +3,7 @@ import { LoggingInterceptor } from '../../client/interceptors/logging.intercepto
 import { ApiUseTags, ApiResponse, ApiOperation, ApiExcludeEndpoint } from '@nestjs/swagger';
 
 @Controller('management')
-@UseInterceptors(LoggingInterceptor)
+// @UseInterceptors(LoggingInterceptor)
 @ApiUseTags('management-controller')
 export class ManagementController {
     logger = new Logger('ManagementController');

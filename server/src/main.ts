@@ -4,7 +4,9 @@ import cloudConfigClient from 'cloud-config-client';
 import { AppModule } from './app.module';
 import { setupSwagger } from './swagger';
 import { config } from './config';
-import { Logger, ValidationPipe, BadRequestException } from '@nestjs/common';
+import { ValidationPipe, BadRequestException, Logger } from '@nestjs/common';
+import { Logger as LG } from 'nestjs-pino';
+import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { isEmail } from 'class-validator';
 import { PropertyMetadata } from '@nestjs/core/injector/instance-wrapper';
 import client from './redis.config';
@@ -18,25 +20,31 @@ async function bootstrap(): Promise<void> {
     registerAsEurekaService();
 
     const appOptions = { cors: true };
-    const app = await NestFactory.create(AppModule, appOptions);
+    const app = await NestFactory.create(AppModule, {
+        logger: false,
+    });
+    app.useLogger(app.get(WINSTON_MODULE_NEST_PROVIDER));
+
+    // app.useLogger(app.get(LG));
+
     app.useGlobalPipes(
         new ValidationPipe({
             exceptionFactory: (): BadRequestException => new BadRequestException('Validation error'),
         }),
     );
 
-    logger.log('The client is not been generated');
+    // logger.log('The client is not been generated');
     setupSwagger(app);
 
     await app.listen(port);
 
-    logger.log(`Application listening on port ${port}`);
+    // logger.log(`Application listening on port ${port}`);
 }
 
 async function loadCloudConfig(): Promise<void> {
     if (useApplicationRegistry) {
         const endpoint = config.get('cloud.config.uri') || 'http://admin:admin@localhost:8761/config';
-        logger.log(`Loading cloud config from ${endpoint}`);
+        // logger.log(`Loading cloud config from ${endpoint}`);
 
         const cloudConfig = await cloudConfigClient.load({
             context: process.env,
@@ -54,7 +62,7 @@ async function loadCloudConfig(): Promise<void> {
 
 function registerAsEurekaService(): void {
     if (useApplicationRegistry) {
-        logger.log(`Registering with eureka ${config.get('cloud.config.uri')}`);
+        // logger.log(`Registering with eureka ${config.get('cloud.config.uri')}`);
         const Eureka = require('eureka-js-client').Eureka;
         const eurekaUrl = require('url').parse(config.get('cloud.config.uri'));
         const client = new Eureka({
@@ -90,7 +98,7 @@ function registerAsEurekaService(): void {
             },
         });
         client.logger.level('debug');
-        client.start(error => logger.log(error || 'Eureka registration complete'));
+        client.start(error => {});
     }
 }
 

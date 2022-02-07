@@ -1,9 +1,13 @@
 import yaml from 'js-yaml';
 import * as fs from 'fs';
 import * as path from 'path';
+// import { PinoLogger } from 'nestjs-pino';
+import { PinoLogger, InjectPinoLogger } from 'nestjs-pino';
+
 import { Logger } from '@nestjs/common';
 
-const logger = new Logger('Config');
+// const logger = new PinoLogger({});
+const logger = new Logger();
 
 export class Config {
     debugLogging = 'debug';
@@ -47,6 +51,7 @@ export class Config {
 
     constructor(properties) {
         this.addAll(properties);
+        // this.logger.setContext('Config');
     }
 
     public get(key: string): any {

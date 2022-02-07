@@ -3,3 +3,7 @@ export interface Payload {
     username: string;
     authorities?: string[];
 }
+
+export interface RefreshTokenPayload {
+    id: number;
+}

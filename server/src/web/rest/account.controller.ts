@@ -22,7 +22,7 @@ import { ApiBearerAuth, ApiUseTags, ApiResponse, ApiOperation } from '@nestjs/sw
 import { AuthService } from '../../service/auth.service';
 
 @Controller('api')
-@UseInterceptors(LoggingInterceptor, ClassSerializerInterceptor)
+@UseInterceptors(ClassSerializerInterceptor)
 @ApiUseTags('account-resource')
 export class AccountController {
     logger = new Logger('AccountController');

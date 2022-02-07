@@ -1,13 +1,14 @@
 import { Injectable, HttpException, HttpStatus, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { JwtService } from '@nestjs/jwt';
-import { UserLoginDTO } from '../service/dto/user-login.dto';
-import { Payload } from '../security/payload.interface';
+import { JwtSecretRequestType, JwtService } from '@nestjs/jwt';
+import { UserLoginDTO } from './dto/user-login.dto';
+import { Payload, RefreshTokenPayload } from '../security/payload.interface';
 import * as bcrypt from 'bcrypt';
 import { AuthorityRepository } from '../repository/authority.repository';
-import { UserService } from '../service/user.service';
+import { UserService } from './user.service';
 import { UserDTO } from './dto/user.dto';
 import { FindManyOptions } from 'typeorm';
+import Redis from '../redis.config';
 
 @Injectable()
 export class AuthService {
@@ -21,6 +22,8 @@ export class AuthService {
     async login(userLogin: UserLoginDTO): Promise<any> {
         const loginUserName = userLogin.username;
         const loginPassword = userLogin.password;
+        const client = await Redis();
+        client.set('hi', 'helloskys');
 
         const userFind = await this.userService.findByFields({ where: { login: loginUserName } });
         const validPassword = !!userFind && (await bcrypt.compare(loginPassword, userFind.password));
@@ -35,14 +38,21 @@ export class AuthService {
         const user = await this.findUserWithAuthById(userFind.id);
 
         const payload: Payload = { id: user.id, username: user.login, authorities: user.authorities };
+        const refreshTokenPayload: RefreshTokenPayload = { id: user.id };
+        const refreshToken = this.jwtService.sign(refreshTokenPayload, {
+            secret: 'ysk',
+            expiresIn: '7d',
+        });
+        client.set(user.id, refreshToken);
 
         /* eslint-disable */
-    return {
-      id_token: this.jwtService.sign(payload)
-    };
-  }
+        return {
+            id_token: this.jwtService.sign(payload),
+            refresh_token: refreshToken,
+        };
+    }
 
-  /* eslint-enable */
+    /* eslint-enable */
     async validateUser(payload: Payload): Promise<UserDTO | undefined> {
         return await this.findUserWithAuthById(payload.id);
     }

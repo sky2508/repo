@@ -9,6 +9,7 @@ import {
     Put,
     UseGuards,
     Req,
+    Inject,
     UseInterceptors,
     ClassSerializerInterceptor,
 } from '@nestjs/common';
@@ -20,15 +21,14 @@ import { Request } from '../../client/request';
 import { LoggingInterceptor } from '../../client/interceptors/logging.interceptor';
 import { ApiBearerAuth, ApiUseTags, ApiResponse, ApiOperation } from '@nestjs/swagger';
 import { UserService } from '../../service/user.service';
+import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 
 @Controller('api/admin/users')
 @UseGuards(AuthGuard, RolesGuard)
-@UseInterceptors(LoggingInterceptor, ClassSerializerInterceptor)
+@UseInterceptors(ClassSerializerInterceptor)
 @ApiBearerAuth()
 @ApiUseTags('user-resource')
 export class UserController {
-    logger = new Logger('UserController');
-
     constructor(private readonly userService: UserService) {}
 
     @Get('/')
@@ -48,6 +48,7 @@ export class UserController {
             order: pageRequest.sort.asOrder(),
         });
         HeaderUtil.addPaginationHeaders(req.res, new Page(results, count, pageRequest));
+
         return results;
     }
 
