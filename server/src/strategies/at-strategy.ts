@@ -11,7 +11,7 @@ import supertest from 'supertest';
 import { threadId } from 'worker_threads';
 import { resolve } from 'dns';
 import { ok } from 'assert';
-
+import { ClientClosedError } from 'redis';
 @Injectable()
 export class AtStrategy extends PassportStrategy(Strategy, 'jwt') {
     constructor(private readonly authService: AuthService, private readonly JwtService: JwtService) {
@@ -29,25 +29,39 @@ export class AtStrategy extends PassportStrategy(Strategy, 'jwt') {
         console.log('TOKEN IS COMMING', at);
 
         try {
+            console.log('ENTEREING');
             const isOk = await this.JwtService.verify(at, {
                 secret: config['application.security.authentication.jwt.base64-secret'],
             });
-            const user = await this.authService.validateUser(payload);
 
-            if (!user) {
-                return done(new UnauthorizedException({ message: 'user does not exist' }), false);
+            if (isOk) {
+                const user = await this.authService.validateUser(payload);
+
+                if (!user) {
+                    return done(new UnauthorizedException({ message: 'user does not exist' }), false);
+                }
+
+                return done(null, user);
+            } else {
+                new Error('Genertate new one');
             }
-
-            return done(null, user);
         } catch (err) {
-            const newToken = this.JwtService.sign(payload, {
-                secret: config['application.security.authentication.jwt.base64-secret'],
-                expiresIn: config['application.security.authentication.jwt.refresh-token-validity-in-days'],
-            });
+            console.log('BUG');
+            const newToken = this.JwtService.sign(
+                { userId: 3 },
+                {
+                    secret: config['application.security.authentication.jwt.base64-secret'],
+                    expiresIn: config['application.security.authentication.jwt.refresh-token-validity-in-days'],
+                },
+            );
             console.log('CACTCH BLOCK');
             req.res.setHeader('x-update-access-token-flag', 1);
             req.res.setHeader('Authorization', newToken);
-            return done(null, newToken);
+
+            return req.res.json({
+                message: 'access token expired ,please renew it',
+                access_token: newToken,
+            });
         }
     }
 }
