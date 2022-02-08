@@ -1,5 +1,4 @@
 import { Controller, ClassSerializerInterceptor, Get, Logger, Req, UseInterceptors } from '@nestjs/common';
-import { LoggingInterceptor } from '../../client/interceptors/logging.interceptor';
 import { PageRequest, Page } from '../../domain/base/pagination.entity';
 import { UserDTO } from '../../service/dto/user.dto';
 import { Request } from 'express';

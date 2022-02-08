@@ -14,9 +14,10 @@ export class Config {
     'server.port' = '8081';
     'application.clientApp.name' = 'skygge_validate';
     'application.registry.password' = 'admin';
-    'application.security.authentication.jwt.base64-secret' = '';
-    'application.security.authentication.jwt.token-validity-in-seconds' = 86400;
+    'application.security.authentication.jwt.base64-secret' = 'lkasdhsdfdsf';
+    'application.security.authentication.jwt.token-validity-in-seconds' = 60;
     'application.security.authentication.jwt.token-validity-in-seconds-for-remember-me' = 2592000;
+    'application.security.authentication.jwt.refresh-token-validity-in-days' = '7d';
     'application.security.authentication.jwt.hash-salt-or-rounds' = 10;
     'application.mail.base-url' = 'http://127.0.0.1:${server.port}';
     'application.mail.from' = 'skygge_validate@localhost';

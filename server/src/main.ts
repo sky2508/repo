@@ -23,6 +23,7 @@ async function bootstrap(): Promise<void> {
     const app = await NestFactory.create(AppModule, {
         logger: false,
     });
+
     app.useLogger(app.get(WINSTON_MODULE_NEST_PROVIDER));
 
     // app.useLogger(app.get(LG));

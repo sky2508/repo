@@ -14,12 +14,14 @@ import {
     InternalServerErrorException,
 } from '@nestjs/common';
 import { Response, Request } from 'express';
-import { AuthGuard, Roles, RoleType, RolesGuard } from '../../security';
+import { AuthGuard } from '../../security';
+import { AuthGuard as TokensGuard } from '@nestjs/passport';
+import { Roles, RoleType, RolesGuard } from '../../security';
 import { PasswordChangeDTO } from '../../service/dto/password-change.dto';
 import { UserDTO } from '../../service/dto/user.dto';
-import { LoggingInterceptor } from '../../client/interceptors/logging.interceptor';
 import { ApiBearerAuth, ApiUseTags, ApiResponse, ApiOperation } from '@nestjs/swagger';
 import { AuthService } from '../../service/auth.service';
+import { nextTick } from 'process';
 
 @Controller('api')
 @UseInterceptors(ClassSerializerInterceptor)
@@ -136,5 +138,24 @@ export class AccountController {
     })
     finishPasswordReset(@Req() req: Request, @Body() keyAndPassword: string, @Res() res: Response): any {
         throw new InternalServerErrorException();
+    }
+
+    @Post('/logout')
+    @ApiBearerAuth()
+    // @UseGuards(TokensGuard('jwt-refresh'))
+    @UseGuards(TokensGuard('jwt'))
+    @ApiOperation({ title: 'To logout the user' })
+    @ApiResponse({
+        status: 200,
+        description: 'logout success',
+        type: 'string',
+    })
+    logout(@Req() req: Request, @Res() res: Response) {
+        // res.setHeader('Authorization', '');
+        // res.setHeader('x-refresh-token', '');
+        console.log('REACHING');
+        return res.status(200).json({ data: 'logout success' });
+
+        // const response = await this.authService.logout(); // decode the userid from refresh toekn and pass here
     }
 }

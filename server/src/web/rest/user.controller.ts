@@ -18,12 +18,14 @@ import { PageRequest, Page } from '../../domain/base/pagination.entity';
 import { UserDTO } from '../../service/dto/user.dto';
 import { HeaderUtil } from '../../client/header-util';
 import { Request } from '../../client/request';
-import { LoggingInterceptor } from '../../client/interceptors/logging.interceptor';
 import { ApiBearerAuth, ApiUseTags, ApiResponse, ApiOperation } from '@nestjs/swagger';
 import { UserService } from '../../service/user.service';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
+import { AuthGuard as TokensGuard } from '@nestjs/passport';
 
 @Controller('api/admin/users')
+@UseGuards(TokensGuard('jwt-refresh'))
+@UseGuards(TokensGuard('jwt'))
 @UseGuards(AuthGuard, RolesGuard)
 @UseInterceptors(ClassSerializerInterceptor)
 @ApiBearerAuth()

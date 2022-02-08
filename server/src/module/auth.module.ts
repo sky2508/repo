@@ -1,3 +1,5 @@
+import { AtStrategy } from './../strategies/at-strategy';
+import { RtStrategy } from './../strategies/rt-strategy';
 import { Module } from '@nestjs/common';
 import { AuthService } from '../service/auth.service';
 import { UserModule } from '../module/user.module';
@@ -17,14 +19,15 @@ import { pino } from 'pino';
     imports: [
         TypeOrmModule.forFeature([AuthorityRepository]),
         UserModule,
-        PassportModule,
         JwtModule.register({
-            secret: config['application.security.authentication.jwt.base64-secret'],
-            signOptions: { expiresIn: '300s' },
+            // Commenting this as we need two tokens so we will sign those token in services not here with single register function
+            // secret: config['application.security.authentication.jwt.base64-secret'],
+            // signOptions: { expiresIn: '300s' },
         }),
     ],
     controllers: [UserJWTController, PublicUserController, AccountController],
-    providers: [AuthService, JwtStrategy],
+    // providers: [AuthService, JwtStrategy],
+    providers: [AuthService, RtStrategy, AtStrategy],
     exports: [AuthService],
 })
 export class AuthModule {}

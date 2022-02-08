@@ -5,6 +5,7 @@ import { AuthModule } from './module/auth.module';
 import { ormConfig } from './orm.config';
 import { pino } from 'pino';
 import { LoggerMiddleware } from './middlewares/LoggerMiddleware.middleware';
+import { ResponseTimeMiddleware } from '@nest-middlewares/response-time';
 import { WinstonModule } from 'nest-winston';
 import * as winston from 'winston';
 @Module({
@@ -34,5 +35,6 @@ import * as winston from 'winston';
 export class AppModule implements NestModule {
     configure(consumer: MiddlewareConsumer): void {
         consumer.apply(LoggerMiddleware).forRoutes('/api/*');
+        consumer.apply(ResponseTimeMiddleware).forRoutes('/api/*');
     }
 }

@@ -3,28 +3,51 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { JwtSecretRequestType, JwtService } from '@nestjs/jwt';
 import { UserLoginDTO } from './dto/user-login.dto';
 import { Payload, RefreshTokenPayload } from '../security/payload.interface';
-import * as bcrypt from 'bcrypt';
 import { AuthorityRepository } from '../repository/authority.repository';
 import { UserService } from './user.service';
 import { UserDTO } from './dto/user.dto';
 import { FindManyOptions } from 'typeorm';
 import Redis from '../redis.config';
+import { config } from '../config';
+import { Response as Res } from 'express';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
     logger = new Logger('AuthService');
+
     constructor(
         private readonly jwtService: JwtService,
         @InjectRepository(AuthorityRepository) private authorityRepository: AuthorityRepository,
         private userService: UserService,
     ) {}
 
+    async getTokens(payload: Payload) {
+        const [at, rt] = await Promise.all([
+            this.jwtService.signAsync(payload, {
+                secret: config['application.security.authentication.jwt.base64-secret'],
+                expiresIn: config['application.security.authentication.jwt.token-validity-in-seconds'], // 1day
+            }),
+
+            this.jwtService.signAsync(
+                { id: payload.id },
+                {
+                    secret: config['application.security.authentication.jwt.base64-secret'],
+                    expiresIn: config['application.security.authentication.jwt.refresh-token-validity-in-days'], // 7days
+                },
+            ),
+        ]);
+
+        return {
+            access_token: at,
+            refresh_token: rt,
+        };
+    }
+
     async login(userLogin: UserLoginDTO): Promise<any> {
         const loginUserName = userLogin.username;
         const loginPassword = userLogin.password;
         const client = await Redis();
-        client.set('hi', 'helloskys');
-
         const userFind = await this.userService.findByFields({ where: { login: loginUserName } });
         const validPassword = !!userFind && (await bcrypt.compare(loginPassword, userFind.password));
         if (!userFind || !validPassword) {
@@ -38,20 +61,23 @@ export class AuthService {
         const user = await this.findUserWithAuthById(userFind.id);
 
         const payload: Payload = { id: user.id, username: user.login, authorities: user.authorities };
-        const refreshTokenPayload: RefreshTokenPayload = { id: user.id };
-        const refreshToken = this.jwtService.sign(refreshTokenPayload, {
-            secret: 'ysk',
-            expiresIn: '7d',
-        });
-        client.set(user.id, refreshToken);
 
-        /* eslint-disable */
+        const tokens = await this.getTokens(payload);
+
+        const saltOrRounds = 10;
+
+        const hashedRefresTokenForRedis = await bcrypt.hash(tokens.refresh_token, saltOrRounds);
+        client.set(user.id, hashedRefresTokenForRedis);
+
         return {
-            id_token: this.jwtService.sign(payload),
-            refresh_token: refreshToken,
+            ...tokens,
         };
     }
 
+    async logout(userId: number) {
+        const client = await Redis();
+        client.del(userId);
+    }
     /* eslint-enable */
     async validateUser(payload: Payload): Promise<UserDTO | undefined> {
         return await this.findUserWithAuthById(payload.id);
