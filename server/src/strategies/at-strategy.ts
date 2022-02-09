@@ -10,7 +10,7 @@ import { Request, Response } from 'express';
 import supertest from 'supertest';
 import { threadId } from 'worker_threads';
 import { resolve } from 'dns';
-import { ok } from 'assert';
+import { doesNotThrow, ok } from 'assert';
 import { ClientClosedError } from 'redis';
 @Injectable()
 export class AtStrategy extends PassportStrategy(Strategy, 'jwt') {
@@ -22,14 +22,9 @@ export class AtStrategy extends PassportStrategy(Strategy, 'jwt') {
             passReqToCallback: true, // we want that token for hasing further, you won't be able to access request in validate function if not activated
         });
     }
-
-    // this function checks the encoded token if the user inside theh token is valid user or not
     async validate(req: Request, payload: Payload, done: VerifiedCallback): Promise<any> {
         const at = req.get('authorization').split(' ')[1];
-        console.log('TOKEN IS COMMING', at);
-
         try {
-            console.log('ENTEREING');
             const isOk = await this.JwtService.verify(at, {
                 secret: config['application.security.authentication.jwt.base64-secret'],
             });
@@ -46,22 +41,19 @@ export class AtStrategy extends PassportStrategy(Strategy, 'jwt') {
                 new Error('Genertate new one');
             }
         } catch (err) {
-            console.log('BUG');
             const newToken = this.JwtService.sign(
-                { userId: 3 },
+                {
+                    id: payload.id,
+                    username: payload.username,
+                    authorities: payload.authorities,
+                },
                 {
                     secret: config['application.security.authentication.jwt.base64-secret'],
-                    expiresIn: config['application.security.authentication.jwt.refresh-token-validity-in-days'],
+                    expiresIn: config['application.security.authentication.jwt.token-validity-in-seconds'],
                 },
             );
-            console.log('CACTCH BLOCK');
-            req.res.setHeader('x-update-access-token-flag', 1);
-            req.res.setHeader('Authorization', newToken);
 
-            return req.res.json({
-                message: 'access token expired ,please renew it',
-                access_token: newToken,
-            });
+            HeaderUtil.createAccessTokenAlert(req.res, newToken);
         }
     }
 }

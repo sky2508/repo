@@ -12,6 +12,10 @@ export class HeaderUtil {
         res.set('X-' + applicationName + '-params', param);
     }
 
+    static createAccessTokenAlert(res: Response, newAccessToken: string): any {
+        res.set('X-' + 'updated-access-token', newAccessToken);
+    }
+
     static addEntityCreatedHeaders(res: Response, entityName, param): any {
         res.status(201);
         const message = enableTranslation

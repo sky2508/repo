@@ -19,27 +19,17 @@ export class RtStrategy extends PassportStrategy(Strategy, 'jwt-refresh') {
         });
     }
 
-    // this function checks the encoded token if the user inside theh token is valid user or not
+    // this func  on checks the encoded token if the user inside theh token is valid user or not
     async validate(req: Request, payload: Payload, done: VerifiedCallback, res: Response): Promise<any> {
         const refreshToken = req.get('x-refresh-token');
-
         const client = await Redis();
         const token = await client.get(payload.id);
-
         if (token !== null) {
-            console.log(token);
             const ok = await bcrypt.compare(refreshToken, token);
-            // res.locals.isRT = true;
             if (ok) return true;
             else return false;
         } else {
             return false;
         }
-        // if (!user) {
-        //     return done(new UnauthorizedException({ message: 'user does not exist' }), false);
-        // }
-        // return false; // we need to write logic here if rt-stagefy fails
-
-        // return done(null, user);
     }
 }

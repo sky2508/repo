@@ -18,7 +18,7 @@ import { PageRequest, Page } from '../../domain/base/pagination.entity';
 import { UserDTO } from '../../service/dto/user.dto';
 import { HeaderUtil } from '../../client/header-util';
 import { Request } from '../../client/request';
-import { ApiBearerAuth, ApiUseTags, ApiResponse, ApiOperation } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiUseTags, ApiResponse, ApiOperation, ApiImplicitHeader } from '@nestjs/swagger';
 import { UserService } from '../../service/user.service';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { AuthGuard as TokensGuard } from '@nestjs/passport';

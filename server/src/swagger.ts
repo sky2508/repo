@@ -11,6 +11,7 @@ export function setupSwagger(app: INestApplication): any {
         .setDescription(config.get('application.swagger.description'))
         .setVersion(config.get('application.swagger.version'))
         .addBearerAuth()
+        // .addBearerAuth('x-refresh-token', 'header')
         .build();
     const document = SwaggerModule.createDocument(app, options);
     SwaggerModule.setup(swaggerEndpoint, app, document);
