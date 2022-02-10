@@ -1,3 +1,4 @@
+import { HttpExceptionFilter } from './../../filters/RequestIdFilter';
 import {
     Body,
     Controller,
@@ -11,6 +12,7 @@ import {
     Req,
     Inject,
     UseInterceptors,
+    UseFilters,
     ClassSerializerInterceptor,
 } from '@nestjs/common';
 import { AuthGuard, Roles, RolesGuard, RoleType } from '../../security';

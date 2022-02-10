@@ -1,3 +1,4 @@
+import { RequestIdMiddleware } from './middlewares/RequestIdMiddleware.middleware';
 import { Module, NestModule, Logger, MiddlewareConsumer } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { LoggerModule, PinoLogger } from 'nestjs-pino';
@@ -36,5 +37,6 @@ export class AppModule implements NestModule {
     configure(consumer: MiddlewareConsumer): void {
         consumer.apply(LoggerMiddleware).forRoutes('/api/*');
         consumer.apply(ResponseTimeMiddleware).forRoutes('/api/*');
+        consumer.apply(RequestIdMiddleware).forRoutes('/api/*');
     }
 }
