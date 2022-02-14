@@ -1,3 +1,4 @@
+import { UserModule } from './module/user.module';
 import { RequestIdMiddleware } from './middlewares/RequestIdMiddleware.middleware';
 import { Module, NestModule, Logger, MiddlewareConsumer } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -8,6 +9,7 @@ import { pino } from 'pino';
 import { LoggerMiddleware } from './middlewares/LoggerMiddleware.middleware';
 import { ResponseTimeMiddleware } from '@nest-middlewares/response-time';
 import { WinstonModule } from 'nest-winston';
+import { ClientModule } from './module/client.module';
 import * as winston from 'winston';
 @Module({
     imports: [
@@ -29,6 +31,7 @@ import * as winston from 'winston';
         }),
         TypeOrmModule.forRootAsync({ useFactory: ormConfig }),
         AuthModule,
+        ClientModule,
     ],
     controllers: [],
     providers: [],
@@ -37,6 +40,6 @@ export class AppModule implements NestModule {
     configure(consumer: MiddlewareConsumer): void {
         consumer.apply(LoggerMiddleware).forRoutes('/api/*');
         consumer.apply(ResponseTimeMiddleware).forRoutes('/api/*');
-        consumer.apply(RequestIdMiddleware).forRoutes('/api/*');
+        // consumer.apply(RequestIdMiddleware).forRoutes('/api/*');
     }
 }

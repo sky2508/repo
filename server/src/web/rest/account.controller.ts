@@ -19,20 +19,20 @@ import { AuthGuard as TokensGuard } from '@nestjs/passport';
 import { Roles, RoleType, RolesGuard } from '../../security';
 import { PasswordChangeDTO } from '../../service/dto/password-change.dto';
 import { UserDTO } from '../../service/dto/user.dto';
-import { ApiBearerAuth, ApiUseTags, ApiResponse, ApiOperation } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags, ApiResponse, ApiOperation } from '@nestjs/swagger';
 import { AuthService } from '../../service/auth.service';
 import { nextTick } from 'process';
 
 @Controller('api')
 @UseInterceptors(ClassSerializerInterceptor)
-@ApiUseTags('account-resource')
+@ApiTags('account-resource')
 export class AccountController {
     logger = new Logger('AccountController');
 
     constructor(private readonly authService: AuthService) {}
 
     @Post('/register')
-    @ApiOperation({ title: 'Register user' })
+    @ApiOperation({ summary: 'Register user' })
     @ApiResponse({
         status: 201,
         description: 'Registered user',
@@ -46,7 +46,7 @@ export class AccountController {
     @ApiBearerAuth()
     @UseGuards(AuthGuard, RolesGuard)
     @Roles(RoleType.ADMIN)
-    @ApiOperation({ title: 'Activate an account' })
+    @ApiOperation({ summary: 'Activate an account' })
     @ApiResponse({
         status: 200,
         description: 'activated',
@@ -58,7 +58,7 @@ export class AccountController {
     @Get('/authenticate')
     @ApiBearerAuth()
     @UseGuards(AuthGuard)
-    @ApiOperation({ title: 'Check if the user is authenticated' })
+    @ApiOperation({ summary: 'Check if the user is authenticated' })
     @ApiResponse({
         status: 200,
         description: 'login authenticated',
@@ -71,7 +71,7 @@ export class AccountController {
     @Get('/account')
     @ApiBearerAuth()
     @UseGuards(AuthGuard)
-    @ApiOperation({ title: 'Get the current user.' })
+    @ApiOperation({ summary: 'Get the current user.' })
     @ApiResponse({
         status: 200,
         description: 'user retrieved',
@@ -85,7 +85,7 @@ export class AccountController {
     @Post('/account')
     @ApiBearerAuth()
     @UseGuards(AuthGuard)
-    @ApiOperation({ title: 'Update the current user information' })
+    @ApiOperation({ summary: 'Update the current user information' })
     @ApiResponse({
         status: 201,
         description: 'user info updated',
@@ -99,7 +99,7 @@ export class AccountController {
     @Post('/account/change-password')
     @ApiBearerAuth()
     @UseGuards(AuthGuard)
-    @ApiOperation({ title: 'Change current password' })
+    @ApiOperation({ summary: 'Change current password' })
     @ApiResponse({
         status: 201,
         description: 'user password changed',
@@ -117,7 +117,7 @@ export class AccountController {
     @Post('/account/reset-password/init')
     @ApiBearerAuth()
     @UseGuards(AuthGuard)
-    @ApiOperation({ title: 'Send an email to reset the password of the user' })
+    @ApiOperation({ summary: 'Send an email to reset the password of the user' })
     @ApiResponse({
         status: 201,
         description: 'mail to reset password sent',
@@ -130,7 +130,7 @@ export class AccountController {
     @Post('/account/reset-password/finish')
     @ApiBearerAuth()
     @UseGuards(AuthGuard)
-    @ApiOperation({ title: 'Finish to reset the password of the user' })
+    @ApiOperation({ summary: 'Finish to reset the password of the user' })
     @ApiResponse({
         status: 201,
         description: 'password reset',
@@ -144,7 +144,7 @@ export class AccountController {
     @ApiBearerAuth()
     // @UseGuards(TokensGuard('jwt-refresh'))
     @UseGuards(TokensGuard('jwt'))
-    @ApiOperation({ title: 'To logout the user' })
+    @ApiOperation({ summary: 'To logout the user' })
     @ApiResponse({
         status: 200,
         description: 'logout success',

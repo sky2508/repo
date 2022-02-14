@@ -20,7 +20,7 @@ import { PageRequest, Page } from '../../domain/base/pagination.entity';
 import { UserDTO } from '../../service/dto/user.dto';
 import { HeaderUtil } from '../../client/header-util';
 import { Request } from '../../client/request';
-import { ApiBearerAuth, ApiUseTags, ApiResponse, ApiOperation, ApiImplicitHeader } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags, ApiResponse, ApiOperation, ApiHeader } from '@nestjs/swagger';
 import { UserService } from '../../service/user.service';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { AuthGuard as TokensGuard } from '@nestjs/passport';
@@ -31,13 +31,13 @@ import { AuthGuard as TokensGuard } from '@nestjs/passport';
 @UseGuards(AuthGuard, RolesGuard)
 @UseInterceptors(ClassSerializerInterceptor)
 @ApiBearerAuth()
-@ApiUseTags('user-resource')
+@ApiTags('user-resource')
 export class UserController {
     constructor(private readonly userService: UserService) {}
 
     @Get('/')
     @Roles(RoleType.ADMIN)
-    @ApiOperation({ title: 'Get the list of users' })
+    @ApiOperation({ summary: 'Get the list of users' })
     @ApiResponse({
         status: 200,
         description: 'List all users',
@@ -58,7 +58,7 @@ export class UserController {
 
     @Post('/')
     @Roles(RoleType.ADMIN)
-    @ApiOperation({ title: 'Create user' })
+    @ApiOperation({ summary: 'Create user' })
     @ApiResponse({
         status: 201,
         description: 'The record has been successfully created.',
@@ -74,7 +74,7 @@ export class UserController {
 
     @Put('/')
     @Roles(RoleType.ADMIN)
-    @ApiOperation({ title: 'Update user' })
+    @ApiOperation({ summary: 'Update user' })
     @ApiResponse({
         status: 200,
         description: 'The record has been successfully updated.',
@@ -100,7 +100,7 @@ export class UserController {
 
     @Get('/:login')
     @Roles(RoleType.ADMIN)
-    @ApiOperation({ title: 'Get user' })
+    @ApiOperation({ summary: 'Get user' })
     @ApiResponse({
         status: 200,
         description: 'The found record',
@@ -112,7 +112,7 @@ export class UserController {
 
     @Delete('/:login')
     @Roles(RoleType.ADMIN)
-    @ApiOperation({ title: 'Delete user' })
+    @ApiOperation({ summary: 'Delete user' })
     @ApiResponse({
         status: 204,
         description: 'The record has been successfully deleted.',

@@ -1,3 +1,5 @@
+import { clientProviders } from './../providers/client.providers';
+import { DatabaseModule } from './../database/database.module';
 import { AtStrategy } from './../strategies/at-strategy';
 import { RtStrategy } from './../strategies/rt-strategy';
 import { Module } from '@nestjs/common';
@@ -19,6 +21,7 @@ import { pino } from 'pino';
     imports: [
         TypeOrmModule.forFeature([AuthorityRepository]),
         UserModule,
+        DatabaseModule,
         JwtModule.register({
             // Commenting this as we need two tokens so we will sign those token in services not here with single register function
             // secret: config['application.security.authentication.jwt.base64-secret'],

@@ -7,8 +7,6 @@ import { config } from './config';
 import { ValidationPipe, BadRequestException, Logger } from '@nestjs/common';
 import { Logger as LG } from 'nestjs-pino';
 import helmet from 'helmet';
-// somewhere in your initialization file
-
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { isEmail } from 'class-validator';
 import { PropertyMetadata } from '@nestjs/core/injector/instance-wrapper';
@@ -22,8 +20,8 @@ async function bootstrap(): Promise<void> {
     loadCloudConfig();
     registerAsEurekaService();
 
-    const appOptions = { cors: true };
     const app = await NestFactory.create(AppModule, {
+        cors: true,
         logger: false,
     });
 
@@ -36,8 +34,6 @@ async function bootstrap(): Promise<void> {
     );
 
     app.use(helmet()); // initalizing helmet
-
-    // logger.log('The client is not been generated');
     setupSwagger(app);
 
     await app.listen(port);

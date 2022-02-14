@@ -3,19 +3,19 @@ import { PageRequest, Page } from '../../domain/base/pagination.entity';
 import { UserDTO } from '../../service/dto/user.dto';
 import { Request } from 'express';
 import { HeaderUtil } from '../../client/header-util';
-import { ApiUseTags, ApiResponse, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
+import { ApiTags, ApiResponse, ApiOperation, ApiBearerAuth, ApiHeader } from '@nestjs/swagger';
 import { AuthService } from '../../service/auth.service';
 
 @Controller('api')
 @UseInterceptors(ClassSerializerInterceptor)
-@ApiUseTags('public-user-controller')
+@ApiTags('public-user-controller')
 export class PublicUserController {
     logger = new Logger('PublicUserController');
 
     constructor(private readonly authService: AuthService) {}
 
     @Get('/users')
-    @ApiOperation({ title: 'Get the list of users' })
+    @ApiOperation({ summary: 'Get the list of users' })
     @ApiResponse({
         status: 200,
         description: 'List all users records',
@@ -34,7 +34,7 @@ export class PublicUserController {
     }
 
     @Get('/authorities')
-    @ApiOperation({ title: 'Get the list of user roles' })
+    @ApiOperation({ summary: 'Get the list of user roles' })
     @ApiResponse({
         status: 200,
         description: 'List all user roles',
