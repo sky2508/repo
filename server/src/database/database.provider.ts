@@ -1,6 +1,7 @@
+import { MasterRole } from './../models/masterRole.model';
 import { Sequelize } from 'sequelize-typescript';
 import { Client } from '../models/client.entity';
-
+import { User } from '../models/users.entity';
 export const databaseProviders = [
     {
         provide: 'SEQUELIZE',
@@ -13,7 +14,7 @@ export const databaseProviders = [
                 password: '',
                 database: 'nestdb5',
             });
-            sequelize.addModels([Client]);
+            sequelize.addModels([Client, User, MasterRole]);
             await sequelize.sync();
             return sequelize;
         },

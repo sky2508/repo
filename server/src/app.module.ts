@@ -1,4 +1,4 @@
-import { UserModule } from './module/user.module';
+import { DatabaseModule } from './database/database.module';
 import { RequestIdMiddleware } from './middlewares/RequestIdMiddleware.middleware';
 import { Module, NestModule, Logger, MiddlewareConsumer } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -11,8 +11,17 @@ import { ResponseTimeMiddleware } from '@nest-middlewares/response-time';
 import { WinstonModule } from 'nest-winston';
 import { ClientModule } from './module/client.module';
 import * as winston from 'winston';
+import { SeederModule } from 'nestjs-sequelize-seeder';
+
 @Module({
     imports: [
+        DatabaseModule,
+        SeederModule.forRoot({
+            // Activate this if you want to run the seeders if the table is empty in the database
+            runOnlyIfTableIsEmpty: true,
+            logging: true,
+            isGlobal: true,
+        }),
         WinstonModule.forRoot({
             format: winston.format.combine(winston.format.timestamp(), winston.format.json()),
             transports: [
@@ -40,6 +49,6 @@ export class AppModule implements NestModule {
     configure(consumer: MiddlewareConsumer): void {
         consumer.apply(LoggerMiddleware).forRoutes('/api/*');
         consumer.apply(ResponseTimeMiddleware).forRoutes('/api/*');
-        // consumer.apply(RequestIdMiddleware).forRoutes('/api/*');
+        consumer.apply(RequestIdMiddleware).forRoutes('/api/*');
     }
 }

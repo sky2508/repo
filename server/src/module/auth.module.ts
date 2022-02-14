@@ -17,8 +17,12 @@ import { PublicUserController } from '../web/rest/public.user.controller';
 import { AccountController } from '../web/rest/account.controller';
 import { LoggerModule } from 'nestjs-pino';
 import { pino } from 'pino';
+import { SeederModule } from 'nestjs-sequelize-seeder';
+import { MasterRoleSeeder } from '../database/seeders/MasterRoleSeeder';
+
 @Module({
     imports: [
+        // SeederModule.forFeature([MasterRoleSeeder]),
         TypeOrmModule.forFeature([AuthorityRepository]),
         UserModule,
         DatabaseModule,

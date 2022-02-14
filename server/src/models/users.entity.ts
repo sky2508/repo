@@ -1,8 +1,9 @@
-import { Table, Column, Model, HasMany } from 'sequelize-typescript';
+import { Table, Column, Model, HasMany, ForeignKey } from 'sequelize-typescript';
 import { Exclude } from 'class-transformer';
-import { Authority } from '../models/authority.entity';
+import { MasterRole } from './masterRole.model';
+import { BaseModel } from './base.model';
 @Table
-export class User extends Model {
+export class User extends BaseModel {
     @Column
     login: string;
     @Column
@@ -16,9 +17,11 @@ export class User extends Model {
     @Column
     langKey?: string;
 
-    @HasMany(() => Authority) // creating a new table
+    @ForeignKey(() => MasterRole)
+    @Column // creating a new table
     // @JoinTable()
-    authorities?: any[];
+    role_id: number;
+    // authorities?: any[];
 
     @Column
     @Exclude()
@@ -31,4 +34,15 @@ export class User extends Model {
     resetKey?: string;
     @Column
     resetDate?: Date;
+    @Column
+    user_name: string;
+
+    @Column
+    client_id: number;
+
+    @Column
+    user_type: string;
+
+    @Column
+    country_code: string;
 }
